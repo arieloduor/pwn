@@ -1,21 +1,21 @@
 BIN=bin
 SRC=src
 FLAGS=-Wall -Wextra -Werror
-CMD_CONTROL=command_and_control
-PORT_SCANNER=port_scanner
+REVERSE_SHELL=reverse_shell
+TCP_CONNECT_SCAN=tcp_connect_scan
 
 
 setup:
-	mkdir -p $(BIN)/$(PORT_SCANNER)
-	mkdir -p $(BIN)/$(CMD_CONTROL)
+	mkdir -p $(BIN)/$(TCP_CONNECT_SCAN)
+	mkdir -p $(BIN)/$(REVERSE_SHELL)
 	make all
 
 all:
-	make $(BIN)/$(CMD_CONTROL)/reverse_shell
+	make $(BIN)/$(REVERSE_SHELL)/reverse_shell
 
 
-$(BIN)/$(CMD_CONTROL)/reverse_shell:$(SRC)/$(CMD_CONTROL)/reverse_shell.c
+$(BIN)/$(REVERSE_SHELL)/reverse_shell:$(SRC)/$(REVERSE_SHELL)/reverse_shell.c
 	gcc $(FLAGS) $< -o $@
 
-$(BIN)/$PORT_SCANNER)/port_scanner:$(SRC)/$(PORT_SCANNER)/port_scanner.c
+$(BIN)/$TCP_CONNECT_SCAN)/port_scanner:$(SRC)/$(TCP_CONNECT_SCAN)/port_scanner.c
 	gcc $(FLAGS) $< -o $@
