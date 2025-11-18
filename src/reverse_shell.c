@@ -10,6 +10,11 @@
 #include <stdlib.h>
 
 
+// uncomment the line below to allow for debug prints,however remember to comment them for live testing
+// you don't really want the victim machine to see your debug prints,fail silently
+
+// #define DEBUG 1
+
 #ifdef DEBUG
 
 #define PRINT_DEBUG(msg) perror(msg)
