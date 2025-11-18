@@ -91,7 +91,7 @@ bool reverse_shell(char *host,char *service);
 
 /*
  *
- *  Print USage information when the user does use the the program correctly
+ *  Print Usage information when the user does use the the program correctly
  *
  *  @param1 => argv
  *  	the commandline arguments passed in the main function
