@@ -1,5 +1,5 @@
 #ifndef REVERSE_SHELL_H
-#define RVERSE_SHELL_H 
+#define REVERSE_SHELL_H 
 
 
 #include <stdio.h>
