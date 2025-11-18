@@ -122,7 +122,7 @@ reverse_failed:
 
 int print_usage(char **argv)
 {
-	return printf("\tUsage  :  %s <ATTACKER IP> <ATTACKER PORT>\n",argv[0]);
+	return printf("\t\n\n\tUsage :\n\t\t%s <ATTACKER IP> <ATTACKER PORT>\n\n\n",argv[0]);
 }
 
 int main(int argc,char **argv)
